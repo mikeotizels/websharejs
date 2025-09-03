@@ -3,7 +3,6 @@
  * 
  * https://github.com/mikeotizels/websharejs
  * 
- * @category  Web API
  * @package   Mikeotizels/Web/Toolkit
  * @author    Michael Otieno <mikeotizels@gmail.com>
  * @copyright Copyright 2024-2025 Michael Otieno. All Rights Reserved.
@@ -20,12 +19,10 @@
      * 
      * Utility class that provides support for invoking the native sharing 
      * mechanism of the device to share data.
-     * 
-     * @since 2.0.0
      *
      * @class
      */
-    class moWebShare {
+    window.moWebShare = class {
         /**
          * Constructor.
          * 
@@ -43,13 +40,10 @@
          * @param {Object}   [options={}]          - Configuration options.
          * @param {Function} [options.beforeShare] - Callback function invoked before trying to share.
          *                                           Receives the data object `{ url, title, text }` and the `trigger` element.
-         *                                           Defaults to `console.log()`
-         * @param {Function} [options.success]     - Callback function invoked on successful share.
+         * @param {Function} [options.onSuccess]   - Callback function invoked on successful share.
          *                                           Receives the data object `{ url, title, text }` and the `trigger` element.
-         *                                           Defaults to `console.info()`
          * @param {Function} [options.error]       - Callback function invoked on share failure.
-         *                                           Receives the error object `{ name, message }` and the `trigger` element. 
-         *                                           Defaults to `console.error()`.
+         *                                           Receives the error object `{ name, message }` and the `trigger` element.
          */
         constructor(selector, options = {}) {
             // Selector for trigger elements.
@@ -61,17 +55,17 @@
             // Callback function for before share event
             this.beforeShare = typeof this.options.beforeShare === "function"
                 ? this.options.beforeShare
-                : (data, trigger) => console.log("[moWebShare] Native share triggered.", { data, trigger: trigger });
+                : () => {};
             
             // Callback function for success event
-            this.success = typeof this.options.success === "function"
-                ? this.options.success
-                : (data, trigger) => console.info("[moWebShare] Native share executed.", { data, trigger: trigger });
+            this.onSuccess = typeof this.options.onSuccess === "function"
+                ? this.options.onSuccess
+                : () => {};
             
             // Callback function for error event
-            this.error = typeof this.options.error === "function"
-                ? this.options.error
-                : (error, trigger) => console.error("[moWebShare] Native share failed.", error, { trigger: trigger });
+            this.onError = typeof this.options.onError === "function"
+                ? this.options.onError
+                : () => {};
             
             // Initialize the plugin.
             this._init();
@@ -163,16 +157,16 @@
                     // Validate the share data.
                     if (typeof navigator.canShare === "function") {
                         if (!navigator.canShare(shareData)) {
-                            this.error("The specified data is not shareable on this browser.", trigger);
+                            this.onError("The specified data is not shareable on this browser.", trigger);
                             return;
                         }
                     }
                 
                     try {
                         await this._handleShare(shareData);
-                        this.success(shareData, trigger);
+                        this.onSuccess(shareData, trigger);
                     } catch (error) {
-                        this.error(error, trigger);
+                        this.onError(error, trigger);
                     }
                 });
             });
@@ -199,7 +193,4 @@
             return navigator.share(data);
         }
     }
-    
-    // Expose the moWebShare class globally.
-    window.moWebShare = moWebShare;
 })();
