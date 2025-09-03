@@ -84,20 +84,20 @@ var webShareSetup = function() {
     // Instantiate object
     const webshare = new moWebShare('.btn-webshare', {
         // Before share callback
-        //beforeShare: (data, trigger) => {
-            //console.info('Web Share API invoked with data:', data);
-        //}
+        beforeShare: (data, trigger) => {
+            console.log('[moWebShare] Native share triggered.', { data, trigger: trigger });
+        }
         // Success callback
-        //success: (data, trigger) => {
-            //console.info('Web Share API executed with data:', data);
-        //},
+        onSuccess: (data, trigger) => {
+            console.info('[moWebShare] Native share executed.', { data, trigger: trigger });
+        },
         // Error callback
-        //error: (error, trigger) => {
-            //console.error('Web Share API failed with error:', error);
-            // TODO: Show a generic error message to the user or
-            //       show label "Error" on trigger element then reset
-            //       the element after 3000 ms.
-        //}
+        onError: (error, trigger) => {
+            console.error('[moWebShare] Native share failed.', error, { trigger: trigger });
+            // TODO: Optionally show a generic error message to the user or
+            //       show label "Error" on trigger element then reset the 
+            //       element after 3000 ms.
+        }
     });
 }();
 ```
@@ -115,24 +115,17 @@ you to listen and implement your custom logic.
 - **`beforeShare`**
 
     - Called before executing the `navigator.share()` method
-    - Receives the data object `{ url, title, text }` and the `trigger` 
-      element. 
-    - Defaults to `console.log()`
+    - Receives the data object `{ url, title, text }` and the `trigger` element
 
-- **`success`**
+- **`onSuccess`**
 
-	- Called on successful `navigator.share()` execution.
-    - Receives the data object `{ url, title, text }` and the `trigger` 
-      element 
-    - Defaults to `console.info()`
+	- Called on successful `navigator.share()` execution
+    - Receives the data object `{ url, title, text }` and the `trigger` element
 
-- **`error`**
+- **`onError`**
 
-	- Called when the `navigator.share()` method fails to execute.
+	- Called when the `navigator.share()` method fails to execute
     - Receives the error object `{ name, message }` and the `trigger` element
-    - Defaults to `console.error()`
-
-For a live demo of the default callback functions, just open your console.
 
 ---
 
