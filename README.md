@@ -1,7 +1,7 @@
 Mikeotizels WebShare JS
 =======================
 
-Version 2.0.0 - July 2025
+Version 2.1.0 - March 2026
 
 **Mikeotizels WebShare** is a lightweight utility script that enables seamless 
 integration with the native [Web Share API][1]. It provides the interface for 
@@ -83,10 +83,6 @@ var webShareSetup = function() {
 
     // Instantiate object
     const webshare = new moWebShare('.btn-webshare', {
-        // Before share callback
-        beforeShare: (data, trigger) => {
-            console.log('[moWebShare] Native share triggered.', { data, trigger: trigger });
-        }
         // Success callback
         onSuccess: (data, trigger) => {
             console.info('[moWebShare] Native share executed.', { data, trigger: trigger });
@@ -112,19 +108,14 @@ been shared after invoking the native share.
 That's why custom events are fired, such as beforeShare, success, and error for 
 you to listen and implement your custom logic.
 
-- **`beforeShare`**
+- **`onSuccess`** or `.on('success', callback)`
 
-    - Called before executing the `navigator.share()` method
+    - Called on successful `navigator.share()` execution
     - Receives the data object `{ url, title, text }` and the `trigger` element
 
-- **`onSuccess`**
+- **`onError`** or `.on('error', callback)`
 
-	- Called on successful `navigator.share()` execution
-    - Receives the data object `{ url, title, text }` and the `trigger` element
-
-- **`onError`**
-
-	- Called when the `navigator.share()` method fails to execute
+    - Called when the `navigator.share()` method fails to execute
     - Receives the error object `{ name, message }` and the `trigger` element
 
 ---
